@@ -1,5 +1,6 @@
 FROM ubuntu:16.04
-MAINTAINER rakky.sem@ubill24.com
+
+MAINTAINER semrakky.rupp@gmail.com
 
 LABEL support=python2.7
 
