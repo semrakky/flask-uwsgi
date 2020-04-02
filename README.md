@@ -1,1 +1,2 @@
-# semrakky.rupp-gmail.com
+# flask uwsgi
+# python 2
