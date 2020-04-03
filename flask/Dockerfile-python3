@@ -1,0 +1,41 @@
+FROM ubuntu:16.04
+
+MAINTAINER semrakky.rupp@gmail.com
+
+LABEL support=python3.8.2
+
+LABEL pythonenv=/app/venv
+
+LABEL alembic_dir=/app/migrate
+
+# set container timezone to +7 PP
+ENV TZ=Asia/Phnom_Penh
+
+RUN apt-get update
+
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
+    apt-get install -y alembic nano gettext-base  build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget  python3-venv
+
+RUN wget https://www.python.org/ftp/python/3.8.2/Python-3.8.2.tgz
+
+RUN tar -xf Python-3.8.2.tgz
+
+RUN bash -c "./Python-3.8.2/configure --enable-optimizations" && make altinstall
+
+RUN apt-get install -y python-pip && pip install pip --upgrade pip &&  pip install uwsgi flask
+
+RUN apt-get install -y supervisor
+
+RUN rm -f Python-3.8.2.tgz
+
+WORKDIR app
+
+COPY app /app
+
+RUN cp /app/supervisord.conf /etc/supervisor/conf.d
+
+RUN python3 -m venv venv
+
+RUN /bin/bash -c "source ./venv/bin/activate"
+
+CMD /app/entrypoint.sh
